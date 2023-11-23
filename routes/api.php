@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CarouselItemsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,12 +16,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login')->name('user.login');
+    Route::post('/logout', 'logout');
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/carousel', [CarouselItemsController::class, 'index']);
-Route::get('/carousel/{id}', [CarouselItemsController::class, 'show']);
-Route::post('/carousel', [CarouselItemsController::class, 'store']);
-Route::put('/carousel/{id}', [CarouselItemsController::class, 'update']);
-Route::delete('/carousel/{id}', [CarouselItemsController::class, 'destroy']);
+Route::controller(CarouselItemsController::class)->group(function () {
+    Route::get('/carousel', 'index');
+    Route::get('/carousel/{id}', 'show');
+    Route::post('/carousel', 'store');
+    Route::put('/carousel/{id}', 'update');
+    Route::delete('/carousel/{id}', 'destroy');
+});
